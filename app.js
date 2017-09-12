@@ -11,10 +11,29 @@ const server = http.createServer(function(req, res) {
       res.writeHead(404);
       res.end("Error 404 Not Found");
     } else {
+
+      const newReq = {
+        httpVersion: req.httpVersion,
+        method: req.method,
+        url: req.url,
+        headers: req.headers
+      };
+
+      const newRes = {
+        statusCode: res.statusCode,
+        statusMessage: 'Success!',
+        header: res._header
+      };
+
       res.writeHead(200, {
         "Content-Type": "text/html"
       });
-      res.end(data);
+
+
+      let newData = data.replace('{{ req }}', JSON.stringify(newReq, null, 2))
+        .replace('{{ res }}', JSON.stringify(newRes, null, 2));
+
+      res.end(newData);
     }
   })
 })
